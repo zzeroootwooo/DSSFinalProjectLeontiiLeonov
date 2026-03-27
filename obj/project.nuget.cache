@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ERDj9E/IH8g=",
+  "dgSpecHash": "1vJRQe0sa4A=",
   "success": true,
   "projectFilePath": "E:\\sharp\\TodoApi\\TodoApi\\TodoApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\zzero\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\zzero\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\zzero\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.11\\microsoft.aspnetcore.authentication.jwtbearer.8.0.11.nupkg.sha512",
     "C:\\Users\\zzero\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
