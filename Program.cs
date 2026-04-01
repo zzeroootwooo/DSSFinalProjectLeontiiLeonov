@@ -15,7 +15,6 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -23,3 +22,4 @@ app.MapGet("/", () => "API works");
 app.MapControllers();
 
 app.Run();
+
