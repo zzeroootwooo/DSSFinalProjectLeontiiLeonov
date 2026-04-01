@@ -8,9 +8,9 @@ services:
       - "3087:3087"
     environment:
       - ASPNETCORE_URLS=http://+:3087
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=todo_db;Username=postgres;Password=postgres
     depends_on:
       - postgres
-
   postgres:
     image: postgres:16
     container_name: todo-postgres
@@ -23,6 +23,5 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
 volumes:
   postgres_data:
