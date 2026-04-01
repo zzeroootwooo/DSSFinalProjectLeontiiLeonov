@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TodoApi.Data;
-using TodoApi.DTOs;
+using TodoApi.Dtos;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
