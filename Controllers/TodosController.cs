@@ -178,10 +178,12 @@ namespace TodoApi.Controllers
             if (dueTo.HasValue) query = query.Where(t => t.DueDate <= dueTo);
 
             if (!string.IsNullOrEmpty(search))
+            {
+                var lower = search.ToLower();
                 query = query.Where(t =>
-                    t.Title.Contains(search) ||
-                    (t.Details != null && t.Details.Contains(search)));
-
+                    t.Title.ToLower().Contains(lower) ||
+                    (t.Details != null && t.Details.ToLower().Contains(lower)));
+            }
             return query;
         }
 

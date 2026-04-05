@@ -11,3 +11,4 @@ obj/
 
 .env
 appsettings.Development.json
+node_modules
