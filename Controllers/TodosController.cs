@@ -55,7 +55,7 @@ namespace TodoApi.Controllers
             var query = _db.Todos.Where(t => t.IsPublic);
             query = ApplyFilters(query, status, priority, dueFrom, dueTo, search);
             query = ApplySort(query, sortBy, sortDir);
-            return Ok(await ToPagedResponse(query, page, pageSize));
+            return await ToPagedResponse(query, page, pageSize);
         }
 
         [HttpGet]
@@ -74,7 +74,7 @@ namespace TodoApi.Controllers
             var query = _db.Todos.Where(t => t.UserId == userId);
             query = ApplyFilters(query, status, priority, dueFrom, dueTo, search);
             query = ApplySort(query, sortBy, sortDir);
-            return Ok(await ToPagedResponse(query, page, pageSize));
+            return await ToPagedResponse(query, page, pageSize);
         }
 
         [HttpPost]
@@ -98,7 +98,7 @@ namespace TodoApi.Controllers
 
             _db.Todos.Add(todo);
             await _db.SaveChangesAsync();
-            return StatusCode(201, MapToResponse(todo));
+            return CreatedAtAction(nameof(GetById), new { id = todo.Id }, MapToResponse(todo));
         }
 
         [HttpGet("{id}")]
@@ -193,8 +193,10 @@ namespace TodoApi.Controllers
             {
                 ("dueDate", "asc") => query.OrderBy(t => t.DueDate),
                 ("dueDate", "desc") => query.OrderByDescending(t => t.DueDate),
-                ("priority", "asc") => query.OrderBy(t => t.Priority),
-                ("priority", "desc") => query.OrderByDescending(t => t.Priority),
+                ("priority", "asc") => query.OrderBy(t =>
+                    t.Priority == "low" ? 0 : t.Priority == "medium" ? 1 : 2),
+                ("priority", "desc") => query.OrderByDescending(t =>
+                    t.Priority == "low" ? 0 : t.Priority == "medium" ? 1 : 2),
                 ("title", "asc") => query.OrderBy(t => t.Title),
                 ("title", "desc") => query.OrderByDescending(t => t.Title),
                 (_, "asc") => query.OrderBy(t => t.CreatedAt),
@@ -202,29 +204,35 @@ namespace TodoApi.Controllers
             };
         }
 
-        private async Task<PagedResponse<TodoResponse>> ToPagedResponse(
+        private async Task<IActionResult> ToPagedResponse(
             IQueryable<TodoItem> query, int page, int pageSize)
         {
-            pageSize = Math.Clamp(pageSize, 1, 50);
-            page = Math.Max(page, 1);
+            if (page < 1 || pageSize < 1 || pageSize > 50)
+                return BadRequest(new ProblemDetails
+                {
+                    Status = 400,
+                    Title = "Invalid pagination parameters",
+                    Detail = "page must be >= 1; pageSize must be between 1 and 50."
+                });
 
             var totalItems = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var items = await query
+            var rawItems = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(t => MapToResponse(t))
                 .ToListAsync();
 
-            return new PagedResponse<TodoResponse>
+            var items = rawItems.Select(MapToResponse).ToList();
+
+            return Ok(new PagedResponse<TodoResponse>
             {
                 Items = items,
                 Page = page,
                 PageSize = pageSize,
                 TotalItems = totalItems,
                 TotalPages = totalPages
-            };
+            });
         }
     }
 }

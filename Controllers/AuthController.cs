@@ -28,7 +28,12 @@ namespace TodoApi.Controllers
         {
             var exists = await _db.Users.AnyAsync(u => u.Email == request.Email);
             if (exists)
-                return Conflict(new { message = "Email already in use" });
+                return Conflict(new ProblemDetails
+                {
+                    Status = 409,
+                    Title = "Email already in use",
+                    Detail = "A user with this email address already exists."
+                });
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 

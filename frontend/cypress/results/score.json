@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-04-05T21:20:02.438Z",
+  "startedAt": "2026-04-05T21:40:20.878Z",
   "categories": {
     "Authentication & user isolation": {
       "earned": 0,
@@ -38,9 +38,9 @@
       "total": 2
     },
     "Search": {
-      "earned": 0,
+      "earned": 3,
       "max": 6,
-      "passed": 0,
+      "passed": 1,
       "total": 2
     },
     "Bonus: Redis integration": {
@@ -56,6 +56,6 @@
       "total": 1
     }
   },
-  "totalEarned": 0,
+  "totalEarned": 3,
   "maxEarnable": 110
 }
