@@ -1,15 +1,6 @@
-services:
-  backend:
-    image: ${BACKEND_IMAGE:-todo-api-example}
-    environment:
-      ASPNETCORE_URLS: http://+:3087
-      ConnectionStrings__Default: Host=db;Port=5432;Database=todos;Username=postgres;Password=postgres
-      Jwt__Key: super_secret_dev_key_change_me
-    ports:
-      - "3087:3087"
-    depends_on:
-      - db
+version: "3.9"
 
+services:
   db:
     image: postgres:16-alpine
     environment:
@@ -20,16 +11,36 @@ services:
       - "5432:5432"
     volumes:
       - todo_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d todos"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    image: todoapi-todoapi
+    ports:
+      - "3087:3087"
+    environment:
+      ASPNETCORE_URLS: http://+:3087
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=todos;Username=postgres;Password=postgres
+      Jwt__Key: super_secret_dev_key_change_me
+      Jwt__Issuer: todoapi
+    depends_on:
+      db:
+        condition: service_healthy
 
   frontend:
     build:
       context: .
+      dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: http://backend:3087
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
   cypress:
     build:
@@ -39,7 +50,10 @@ services:
       CYPRESS_baseUrl: http://frontend
       CYPRESS_API_BASE_URL: http://backend:3087
     depends_on:
-      - frontend
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
     volumes:
       - ./cypress/results:/e2e/cypress/results
 

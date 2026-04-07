@@ -1,27 +1,15 @@
+version: "3.9"
+
 services:
-  todoapi:
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: todo-api
     ports:
       - "3087:3087"
     environment:
       - ASPNETCORE_URLS=http://+:3087
-      - ConnectionStrings__DefaultConnection=Host=postgres;Database=todo_db;Username=postgres;Password=postgres
-    depends_on:
-      - postgres
-  postgres:
-    image: postgres:16
-    container_name: todo-postgres
-    restart: always
-    environment:
-      POSTGRES_DB: todo_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-volumes:
-  postgres_data:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=todos;Username=postgres;Password=postgres
+      - Jwt__Key=super_secret_dev_key_change_me
+      - Jwt__Issuer=todoapi
+

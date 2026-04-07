@@ -92,12 +92,23 @@ namespace TodoApi.Controllers
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email)
+    };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            var rawKey = _config["Jwt:Key"]
+                ?? throw new InvalidOperationException("Jwt:Key is missing");
+
+            var keyBytes = Encoding.UTF8.GetBytes(rawKey);
+
+            if (keyBytes.Length < 32)
+            {
+                var newKey = new byte[32];
+                Array.Copy(keyBytes, newKey, keyBytes.Length);
+                keyBytes = newKey;
+            }
+
+            var key = new SymmetricSecurityKey(keyBytes);
 
             var credentials = new SigningCredentials(
                 key, SecurityAlgorithms.HmacSha256);
