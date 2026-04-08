@@ -68,10 +68,10 @@ npm run dev
 
 To run tests:
 For Windows (PowerShell):
-$env:BACKEND_IMAGE="dss_final_project-backend:latest"
+$env:BACKEND_IMAGE="dssfinalprojectleontiileonov-backend:latest"
 docker compose -f docker-compose.e2e.yml up --build --exit-code-from cypress
 For Linux / Mac:
-export BACKEND_IMAGE="dss_final_project-backend:latest"
+export BACKEND_IMAGE="dssfinalprojectleontiileonov-backend:latest"
 docker compose -f docker-compose.e2e.yml up --build --exit-code-from cypress
 
 This will start:
