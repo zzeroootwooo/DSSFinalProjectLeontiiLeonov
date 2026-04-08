@@ -61,7 +61,11 @@ Step 2 — Run full system
 
 Go to frontend folder:
 
+
 cd ./frontend
+npm install
+npm run dev
+
 For Windows (PowerShell):
 $env:BACKEND_IMAGE="dss_final_project-backend:latest"
 docker compose -f docker-compose.e2e.yml up --build --exit-code-from cypress
